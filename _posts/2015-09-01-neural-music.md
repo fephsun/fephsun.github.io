@@ -57,7 +57,7 @@ The music on this page is generated with a Deep Belief Net (DBN).  A DBN is esse
 </p>
 
 <p>
-![](/music/forward-net.png" =500x)
+<img src="/music/forward-net.png" width="500" />
 <br />
 <i>A diagram of a typical DBN architecture.  Each box represents a layer of neurons.  In my diagrams, the input connections to a neuron are part of the neuron, because the input connections are controlled by the neuron's parameters.  (The output connections, in contrast, are controlled by the parameters of the neuron in the layer above.)</i>
 </p>
@@ -109,7 +109,7 @@ You might already see a very simple way to make a DBN that generates a lot of da
 </p>
 
 <p>
-![](/music/gen-net.png =500x)
+<img src="/music/gen-net.png"  width="500" />
 <br />
 <i>
 An "inverted" neural net that can generate music from random labels.  We train this net by associating a random 64 bit number with each snippet of music we have.
@@ -129,7 +129,7 @@ There's a really cool solution to the labeling problem in the literature: autoen
 </p>
 
 <p>
-![](/music/autoencoder-net.png =400x)
+<img src="/music/autoencoder-net.png" width="400" />
 <br />
 <i>
 The autoencoding DBN used to generate the music in this post.  This net is trained to reconstruct its input at its output, hence the name "autoencoding".  The $\mathcal{W}$'s and $\mathcal{W}^T$'s are meant to show the connections between each layer and the next.
@@ -149,7 +149,7 @@ There is a clever way to make an initial guess for the parameters of an autoenco
 </p>
 
 <p>
-![](/music/rbm-layers.png =700x) 
+<img src="/music/rbm-layers.png" width="700" /> 
 <br />
 <i>
 Pre-training an autoencoder one layer at a time, using restricted Boltzmann machines.  At each step, a new pair of layers are added to the network: a compressing layer plus a corresponding decompressing layer.  The weights of the new layers are then set to minimize the reconstruction error.  The old layers are fixed - in this diagram, only the red variables are changed at each step.  This breaks the problem of training an autoencoder net into a bunch of more tractable steps.  After all the layers are added, we can run backpropagation on the entire network to fine-tune the parameters.
