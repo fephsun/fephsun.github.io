@@ -40,7 +40,7 @@ It comes up with <a href="#" onClick="MIDIjs.play('/music/ode_to_joy_harmony.mid
 As you can tell, it's not perfect at making beautiful music yet, but it clearly understands basic chords and rhythms as they relate to a melody.  Just for fun, you can look at the sheet music representation, as well.  (I tried really hard to make this sheet music readable, but the notes are just everywhere.  This in fact reveals a weakness of the neural net - it doesn't understand voice continuity very well.)
 </p>
 
-![](/music/ode_to_joy.png | width=750)
+<img src="/music/ode_to_joy.png" width="750" />
 
 <p>
 If you want to see more cool demos, head for the results section below.
