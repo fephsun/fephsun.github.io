@@ -4,12 +4,6 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+I currently work for <a href="http://waymo.com" target="_blank">Waymo</a>, Google's self-driving car project.  I do machine learning for behavior prediction - my team's job is to anticipate what other cars and pedestrians will be doing 5 seconds from now, in real time.  Before then, I was 6-2 (electrical engineering and computer science) at MIT, class of 2015.  I stayed for an MEng with Jim Glass's <a href="http://groups.csail.mit.edu/sls/" target="_blank">Spoken Language Systems</a> group, working on multimodal speech recognition.
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jekyll" %} /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+If you have any questions, or if you just want to discuss something (admissions?  math?), feel free to email me at felixsun@google.com (work) or fephsun@gmail.com (personal).  

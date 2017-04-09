@@ -1,4 +1,5 @@
 ---
+title: Smaller Projects
 ---
 
 Smaller Projects
@@ -35,7 +36,7 @@ I wrote a program that solves jigsaw puzzles using computer vision techniques.  
 <p>
 Watch it in action here:
 <br />
-<iframe width="420" height="315" src="http://youtube.com/embed/-oG4REJcXg8" frameborder="0" allowfullscreen></iframe>
+<iframe width="420" height="315" src="https://youtube.com/embed/-oG4REJcXg8" frameborder="0" allowfullscreen></iframe>
 </p>
 
 <p>

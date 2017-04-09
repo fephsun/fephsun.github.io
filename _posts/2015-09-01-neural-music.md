@@ -1,4 +1,5 @@
 ---
+title: DeepHear - Composing and harmonizing music with neural networks
 ---
 
 
