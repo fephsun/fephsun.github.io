@@ -171,7 +171,7 @@ function randomSample() {
 </script>
 
 <p>
-<a href="#" onClick="randomSample(); return false;" /> Generate a random sample! <img src="/music/play.png" width="18" /></a>
+<a href="#" onClick="randomSample(); return false;"> Generate a random sample! <img src="/music/play.png" width="18" /></a>
 <br />
 Your sample id is: <span id="id-display"> (ungenerated) </span>.
 </p>
