@@ -1,0 +1,353 @@
+<html>
+<head>
+<title> Fakebook - where it's your birthday every day. </title>
+<script src="http://code.jquery.com/jquery-latest.min.js"> </script>
+<script>
+//Other (fake) people get a randomly-generated profile pic.
+//You get a set profile pic, can submit comments.
+userpics = ['<img class="userpic" src="http://www.alluserpics.com/data/media/25/03012.jpg" >',
+    '<img src="http://www.alluserpics.com/data/media/7/evil_dude.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/25/lenin.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/7/christmas_anime_girl.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/7/00425.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/9/02785.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/9/02070.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/12/02351.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/5/03005.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/5/02850.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/5/02324.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/16/music_pinguin.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/6/02769.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/6/02721.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/6/02752.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/6/01148.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/6/01087.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/6/01118.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/20/03104.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/20/03132.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/20/03015.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/20/03003.jpg" class="userpic" >',
+    '<img src="http://www.alluserpics.com/data/media/20/00503.jpg" class="userpic" >'
+    ]  //Todo: add more pics.
+    
+function commentTemplate(comment) {
+    //Input: a user-submitted comment
+    //Output: an HTML div that will display the comment.
+    return '<div class="comment mycomment">'+userpics[0]+'<b> You </b><br />' + comment + '</div>';
+}
+
+commentEntry = '<div class="comment">'+userpics[0]+'<b> You </b><br /><textarea rows="2" cols="50"></textarea><br /><button class="commentSubmit"> Submit </button></div>'
+
+score = 0;
+
+function commentSubmitter(){
+    commentDiv = $(this).parent();
+    postDiv = commentDiv.parent();
+    comment = commentDiv.children("textarea").val();
+    //Delete the comment input box.
+    commentDiv.remove();
+    //Add the comment to the bottom of the post.
+    postDiv.append(commentTemplate(comment));
+    postDiv.append(commentEntry);
+    //Is there another mycomment in this post?  If not, increment score.  If exactly 1, decrement score.
+    numComments = postDiv.children(".mycomment").length;
+    if (numComments == 1) {
+        score += 1;
+    } else if (numComments == 2) {
+        score -= 1;
+    }
+    $("#scoredisplay").html("Current score: "+score);
+    $(".commentSubmit").click(commentSubmitter);
+}
+
+$(document).ready(function(){
+    i = 1;
+    $(".op, .comment").each(function(){
+        //Random pics
+        $(this).html(userpics[i]+$(this).html());
+        i += 1;
+    });
+    
+    $(".post").each(function(){
+        //Add comment-entry box
+        $(this).append(commentEntry);
+    });
+    
+    $(".commentSubmit").click(commentSubmitter);
+});
+
+
+</script>
+
+<style type="text/css">
+#left{
+    float: left;
+    width: 200;
+}
+
+#center{
+    padding-left: 20px;
+    padding-right: 100px;
+    float: left;
+    width: 600;
+}
+
+#right{
+    float: left;
+    width: 250;
+}
+
+#top{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 40;
+    background-color: #002EB8;
+}
+
+#header{
+    float:left;
+    font-family: "Arial Rounded MT Bold", "Helvetica Rounded", Arial, sans-serif;
+    font-size:24px;
+    color:white;
+    padding-top: 5px;
+    padding-left: 50px;
+}
+
+#rightheader{
+    float:right;
+    color:white;
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+.post{
+    padding-top: 5px;
+    clear: both;
+}
+
+.userpic{
+    width: 64px;
+    height: 64px;
+    float: left;
+    padding-right: 10px;
+}
+
+.comment{
+    float: left;
+    width: 525px;
+    clear: both;
+    border-style: solid;
+    border-color: #FFFFFF;
+    background-color: #EDEFF4;
+    margin-left: 74px;
+}
+
+.comment .userpic {
+    padding: 2px;
+    width: 40px;
+    height: 40px;
+}
+
+button {
+    margin-left: 45px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="top">
+    <div id="header"> Fakebook </div>
+    <div id="rightheader">Where it's your birthday everyday.</div>
+</div>
+
+<div id="left">
+Left
+</div>
+
+<div id="center">
+<br /><br />
+
+<div class="post">
+    <div class="op">
+        <b> Ben Bitdiddle </b><br />
+        Happy birthday, man!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Alyssa P. Hacker </b><br />
+        Happy birthday!  Have a great day!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Alastair Schmitt </b><br />
+        HAPPY BIRTHDAY!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> John Wilson </b><br />
+        Happy birthday, pal!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Thomas Henry </b><br />
+        Happy birthday!  Whoooo!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Percy E. Poyner </b><br />
+        Happy birthday!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Lee J. Sanderson </b><br />
+        Happy birthday!  I'm going to be really long-winded in this post, just see if I can mess up
+        your script.  Blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+        blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah.
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Jamie Rager </b><br />
+        Happy birthday, man!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Chris Martin </b><br />
+        Happy birthday!  Have a great day!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> John Maag </b><br />
+        Happy birthday, pal!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Rodger Fernandez </b><br />
+        Happy birthday!  Have a video of a baby seal.
+        <br />
+    <iframe width="420" height="315" src="http://www.youtube.com/embed/KzGt-g7vEd4" frameborder="0" allowfullscreen></iframe>
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Maureen Mack</b><br />
+        Happy birthday!  Whoooo!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Percy E. Poyner </b><br />
+        Happy birthday!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Bob McDudedude </b><br />
+        Happy birthday, dude!  Hope you have a great day!
+    </div>
+    <div class="comment">
+        <b> Trolo Lolol </b><br />
+        FIRST.
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Kathie Grimshaw </b><br />
+        HAPPY BIRTHDAY!
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Vera Nunez </b><br />
+        Happy birthday!
+    </div>
+    <div class="comment">
+        <b> Delia Thompson </b><br />
+        Comment blah.
+    </div>
+    <div class="comment">
+        <b> Joe Claxton </b><br />
+        Another comment.
+    </div>
+</div>
+
+<div class="post">
+    <div class="op">
+        <b> Samuel Everett </b><br />
+        Happy birthday!  Have a picture of a baby seal.
+        <br />
+        <img src="http://24.media.tumblr.com/tumblr_lxvplr5pTh1qbkitzo1_1280.jpg" width="420">
+    </div>
+</div>
+
+
+
+<div class="post">
+    <div class="op">
+        <b> Marylou Martin </b><br />
+        Happy birthday!
+    </div>
+    <div class="comment">
+        <b> Mildred Ragland </b><br />
+        <br />
+        <iframe width="420" height="315" src="http://www.youtube.com/embed/HRb7B9fPhfA" frameborder="0" allowfullscreen></iframe>
+    </div>
+</div>
+
+</div>
+
+<div id="right">
+<br />
+<br />
+<h2> Get Sikuli </h2>
+<p>
+<a href="https://dl.dropbox.com/u/42895525/SikuliX/SikuliX-1.0-Win32Beta351.zip"> Download link </a>
+</p>
+
+<h2> About </h2>
+<p>
+Welcome to Fakebook, a testing ground for the class "How to script your life", taught at Princeton Splash 2013.
+</p>
+<p id="scoredisplay">
+Current score: 0
+</p>
+</div>
+
+</body>
+</html>

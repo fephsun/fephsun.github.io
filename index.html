@@ -1,0 +1,61 @@
+<html height="700">
+<head>
+<title>Felix's Webby</title>
+<link rel="stylesheet" type="text/css" href="./index.css">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+function resize() {
+	$('#frame').css('height', ($(window).height() - 25) + 'px');
+}
+function onLoad() {
+    // Sets up the iframe correctly, and resizes the window.
+    var frame_url = window.location.search.substring(1);
+    if (frame_url == '') {
+        frame_url = 'home.html';
+    }
+    $('#frame').attr('src', frame_url);
+    resize();
+}
+$(document).ready(onLoad);
+$(window).resize(resize);
+</script>
+</head>
+
+<body bgcolor="703030" link="ffffff" vlink="ffffff" alink="ffffff">
+<table width="1000" border="0"  align="center">
+<tr>
+
+<td width="180" valign="top" >
+<img src="./home/Portrait.jpg">
+<h3>
+<a href="?home.html"> Home </a>
+</h3>
+
+<h3> Projects </h3>
+<ul class="content-list">
+<li><a href="?neural-music.html"> Neural net music composition </a></li>
+<li><a href="?intern-projects.html"> Internships and undergrad research </a></li>
+<li><a href="?small-projects.html"> Misc. </a></li>
+<li><a href="?21w.html"> Freshman science writing </a></li>
+</ul>
+
+<h3>
+<a href="?math.html"> Math Resources </a>
+</h3>
+
+<h3>
+<a href="?camp2011.html"> Summer Camp Materials </a>
+</h3>
+
+<td width="20">
+</td>
+
+<td width="800" valign="top">
+
+<iframe id="frame" frameborder="0" src="./home.html" name="content" width="800" />
+</td>
+
+</tr>
+</table>
+
+</html>
