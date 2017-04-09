@@ -17,7 +17,7 @@ DeepHear - Composing and harmonizing music with neural networks
 <h3> Introduction and tl;dr </h3>
 
 <p>
-I trained a network to generate random bars of music, based on <a href="https://en.wikipedia.org/wiki/Scott_Joplin">Scott Joplin</a>'s ragtime music.  It is a fully connected <a href="http://deeplearning.net/tutorial/DBN.html">Deep Belief Network</a>, set up to perform an auto-encoding task.  The results sound something <a href="#" onClick="MIDIjs.play('music/rag1.midi'); return false;">like this <img src="/music/play.png" width="18"></a>.  (Warning: sound, obviously.  Each snippet lasts around 17 seconds.)  <a href="#" onClick="MIDIjs.play('music/rag2.midi'); return false;"> Or this <img src="/music/play.png" width="18"></a>.
+I trained a network to generate random bars of music, based on <a href="https://en.wikipedia.org/wiki/Scott_Joplin">Scott Joplin</a>'s ragtime music.  It is a fully connected <a href="http://deeplearning.net/tutorial/DBN.html">Deep Belief Network</a>, set up to perform an auto-encoding task.  The results sound something <a href="#" onClick="MIDIjs.play('/music/rag1.midi'); return false;">like this <img src="/music/play.png" width="18"></a>.  (Warning: sound, obviously.  Each snippet lasts around 17 seconds.)  <a href="#" onClick="MIDIjs.play('/music/rag2.midi'); return false;"> Or this <img src="/music/play.png" width="18"></a>.
 </p>
 
 <p><i>
@@ -29,11 +29,11 @@ Even better, we can use prior-sampling techniques to harmonize a melody.  We giv
 </p>
 
 <p>
-For example, if we give our net <a href="#" onClick="MIDIjs.play('music/ode_to_joy.midi'); return false;">this melody<img src="/music/play.png" width="18"></a>...
+For example, if we give our net <a href="#" onClick="MIDIjs.play('/music/ode_to_joy.midi'); return false;">this melody<img src="/music/play.png" width="18"></a>...
 </p>
 
 <p>
-It comes up with <a href="#" onClick="MIDIjs.play('music/ode_to_joy_harmony.midi'); return false;">this harmony<img src="/music/play.png" width="18"></a>.
+It comes up with <a href="#" onClick="MIDIjs.play('/music/ode_to_joy_harmony.midi'); return false;">this harmony<img src="/music/play.png" width="18"></a>.
 </p>
 
 <p>
@@ -117,7 +117,7 @@ An "inverted" neural net that can generate music from random labels.  We train t
 </p>
 
 <p>
-I tried the label-to-snippet idea, with the architecture shown above.  It sort of works: <a href="#" onClick="MIDIjs.play('music/gen-rag1.midi'); return false;"> here's a sample <img src="/music/play.png" width="18"></a>.  <a href="#" onClick="MIDIjs.play('music/gen-rag2.midi'); return false;"> And another. <img src="/music/play.png" width="18"></a>.  But, if you listen carefully, you can tell it's not as good as the stuff in the introduction.  There are a lot of weird dissonances, and the music often sort of lurches to a stop.
+I tried the label-to-snippet idea, with the architecture shown above.  It sort of works: <a href="#" onClick="MIDIjs.play('/music/gen-rag1.midi'); return false;"> here's a sample <img src="/music/play.png" width="18"></a>.  <a href="#" onClick="MIDIjs.play('/music/gen-rag2.midi'); return false;"> And another. <img src="/music/play.png" width="18"></a>.  But, if you listen carefully, you can tell it's not as good as the stuff in the introduction.  There are a lot of weird dissonances, and the music often sort of lurches to a stop.
 </p>
 
 <p>
@@ -189,7 +189,7 @@ Secret: I'm not actually querying my neural net in real time when you push the g
 </p>
 
 <p>
-If you click on the generate button enough times, you might be able to catch my net plagiarizing!  For example, <a href="#" onClick="MIDIjs.play('music/samples/138.midi'); return false;"> sample number 138 <img src="/music/play.png" width="18"></a> sounds like this.  This is in fact the intro to <a href="https://www.youtube.com/watch?v=NdCBT_VHnUk">"The Easy Winners"</a>, part of the training data.  The reason is simple: there are $2^{16} \approx 60000$ possible labels for the input of the generative net, because labels are only 16 bits long.  Of those, 600 labels have to correspond to actual pieces of training data, because our autoencoder assigns each piece of training data a (hopefully unique) label.  Therefore, around 1% of our random samples will correspond directly to training data.  Let me know if you can recognize the tune of any other samples.
+If you click on the generate button enough times, you might be able to catch my net plagiarizing!  For example, <a href="#" onClick="MIDIjs.play('/music/samples/138.midi'); return false;"> sample number 138 <img src="/music/play.png" width="18"></a> sounds like this.  This is in fact the intro to <a href="https://www.youtube.com/watch?v=NdCBT_VHnUk">"The Easy Winners"</a>, part of the training data.  The reason is simple: there are $2^{16} \approx 60000$ possible labels for the input of the generative net, because labels are only 16 bits long.  Of those, 600 labels have to correspond to actual pieces of training data, because our autoencoder assigns each piece of training data a (hopefully unique) label.  Therefore, around 1% of our random samples will correspond directly to training data.  Let me know if you can recognize the tune of any other samples.
 </p>
 
 <p>
@@ -197,7 +197,7 @@ If this net plagiarizes entire songs every once in a while, how original are its
 </p>
 
 <p>
-The 60% plagiarism statistic makes it seem like my net is quite derivative.  But, you don't need to change a large percentage of the notes in a piece to get something that has a completely different sound.  For example, <a href="#" onClick="MIDIjs.play('music/80-similar.midi'); return false;"> this generated piece <img src="/music/play.png" width="18"></a> is actually 80% similar to <a href="#" onClick="MIDIjs.play('music/80-similar-original.midi'); return false;"> this original piece <img src="/music/play.png" width="18"></a>.  Would you say they sound the same in any way?  Probably not - they share a chord progression, but the melody is quite different.
+The 60% plagiarism statistic makes it seem like my net is quite derivative.  But, you don't need to change a large percentage of the notes in a piece to get something that has a completely different sound.  For example, <a href="#" onClick="MIDIjs.play('/music/80-similar.midi'); return false;"> this generated piece <img src="/music/play.png" width="18"></a> is actually 80% similar to <a href="#" onClick="MIDIjs.play('/music/80-similar-original.midi'); return false;"> this original piece <img src="/music/play.png" width="18"></a>.  Would you say they sound the same in any way?  Probably not - they share a chord progression, but the melody is quite different.
 </p>
 
 <p>
@@ -231,11 +231,11 @@ This gets us to a local minimum in the error with respect to $L$.  We then outpu
 </p>
 
 <p>
-The results sound something like this, for Jingle Bells: <a href="#" onClick="MIDIjs.play('music/jingle1.midi'); return false;"> attempt 1<img src="/music/play.png" width="18"></a>, <a href="#" onClick="MIDIjs.play('music/jingle2.midi'); return false;"> attempt 2<img src="/music/play.png" width="18"></a>.  In general, there's reasonable use of chords throughout, but some odd dissonances still.
+The results sound something like this, for Jingle Bells: <a href="#" onClick="MIDIjs.play('/music/jingle1.midi'); return false;"> attempt 1<img src="/music/play.png" width="18"></a>, <a href="#" onClick="MIDIjs.play('/music/jingle2.midi'); return false;"> attempt 2<img src="/music/play.png" width="18"></a>.  In general, there's reasonable use of chords throughout, but some odd dissonances still.
 </p>
 
 <p>
-And since that got me in a Christmas mood, here's another carol: <a href="#" onClick="MIDIjs.play('music/12-days-1.midi'); return false;"> attempt 1<img src="/music/play.png" width="18"></a>, <a href="#" onClick="MIDIjs.play('music/12-days-2.midi'); return false;"> attempt 2<img src="/music/play.png" width="18"></a>.  It seems that "12 Days of Christmas" is a little harder for our neural net, because it has a more complicated melody.
+And since that got me in a Christmas mood, here's another carol: <a href="#" onClick="MIDIjs.play('/music/12-days-1.midi'); return false;"> attempt 1<img src="/music/play.png" width="18"></a>, <a href="#" onClick="MIDIjs.play('/music/12-days-2.midi'); return false;"> attempt 2<img src="/music/play.png" width="18"></a>.  It seems that "12 Days of Christmas" is a little harder for our neural net, because it has a more complicated melody.
 </p>
 
 <h3> Inspirations and coincidences </h3>
