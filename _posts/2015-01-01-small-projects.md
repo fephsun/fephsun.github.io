@@ -2,9 +2,6 @@
 title: Smaller Projects
 ---
 
-Smaller Projects
-================
-
 These are some smaller projects I worked on at MIT for classes and fun.
 
 <h3> 6.852 (distributed algorithms) final project - bitcoin and Byzantine fault-tolerance </h3>

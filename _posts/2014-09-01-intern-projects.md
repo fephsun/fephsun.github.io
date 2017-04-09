@@ -2,9 +2,6 @@
 title: Internships and undergrad research
 ---
 
-Internship and undergrad research
-=================================
-
 These are some brief notes on stuff I did over the summers and in UROPs as an undergrad.
 
 <h3> SuperUROP - Bayesian theory of mind</h3>

@@ -11,10 +11,6 @@ title: DeepHear - Composing and harmonizing music with neural networks
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
-DeepHear - Composing and harmonizing music with neural networks
-===============================================================
-
-
 <h3> Introduction and tl;dr </h3>
 
 <p>
