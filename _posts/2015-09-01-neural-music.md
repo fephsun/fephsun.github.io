@@ -40,7 +40,7 @@ It comes up with <a href="#" onClick="MIDIjs.play('/music/ode_to_joy_harmony.mid
 As you can tell, it's not perfect at making beautiful music yet, but it clearly understands basic chords and rhythms as they relate to a melody.  Just for fun, you can look at the sheet music representation, as well.  (I tried really hard to make this sheet music readable, but the notes are just everywhere.  This in fact reveals a weakness of the neural net - it doesn't understand voice continuity very well.)
 </p>
 
-<img src="/music/ode_to_joy.png" width=750 />
+!(/music/ode_to_joy.png width=750)
 
 <p>
 If you want to see more cool demos, head for the results section below.
@@ -57,7 +57,7 @@ The music on this page is generated with a Deep Belief Net (DBN).  A DBN is esse
 </p>
 
 <p>
-<img src="/music/forward-net.png" width=500 />
+!(/music/forward-net.png" width=500)
 <br />
 <i>A diagram of a typical DBN architecture.  Each box represents a layer of neurons.  In my diagrams, the input connections to a neuron are part of the neuron, because the input connections are controlled by the neuron's parameters.  (The output connections, in contrast, are controlled by the parameters of the neuron in the layer above.)</i>
 </p>
