@@ -1,0 +1,535 @@
+---
+title: Neural net playground (for Google Tech Day 2017)
+---
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+// Global state.
+var problem = {};
+var layer_sizes = [];
+var layers = [];
+var node_map = {};
+var opt_state = {};
+
+function nonLinearity(x) {
+    return x > 0 ? x : 0;
+    // return Math.log(1 + Math.exp(x));
+}
+
+function setUpProblem() {
+    var problem_name = $('#problem-selector').val();
+    problem = {};
+    if (problem_name == 'or') {
+        problem.input_size = 2;
+        problem.inputs = [[0, 0], [0, 1], [1, 0], [1, 1]];
+        problem.outputs = [0, 1, 1, 1];
+        problem.dev_inputs = [];
+        problem.dev_outputs = [];
+        problem.error_type = 'binary';
+    }
+
+    if (problem_name == 'xor') {
+        problem.input_size = 2;
+        problem.inputs = [[0, 0], [0, 1], [1, 0], [1, 1]];
+        problem.outputs = [0, 1, 1, 0];
+        problem.dev_inputs = [];
+        problem.dev_outputs = [];
+        problem.error_type = 'binary';
+    }
+
+    if (problem_name == 'parabola' || problem_name == 'parabola-noise') {
+        problem.input_size = 1;
+        problem.inputs = [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10];
+        problem.dev_inputs = [-9, -7, -5, -3, -1, 1, 3, 5, 7, 9];
+        problem.error_type = 'square';
+        problem.outputs = [];
+        for (var input_i in problem.inputs) {
+            problem.outputs[input_i] = Math.pow(problem.inputs[input_i], 2);
+            if (problem_name == 'parabola-noise') {
+                problem.outputs[input_i] += Plotly.d3.random.normal()() * 8;
+            }
+        }
+        problem.dev_outputs = [];
+        for (var input_i in problem.dev_inputs) {
+            problem.dev_outputs[input_i] = Math.pow(problem.dev_inputs[input_i], 2);
+        }
+    }
+
+    if (problem.name == 'custom') {
+
+    }
+
+    return problem;
+}
+
+function setUpOptState() {
+    opt_state = {
+        on: false,
+        refresh_wait_time: 100,
+        step_size: 0.1,
+        next_layer: 1,
+        next_node: 0,
+    }
+}
+
+function parseLayerSizes() {
+    var sizes = $('#net-size-box').val().split(',');
+    layer_sizes = [problem.input_size];
+    var n_layers = 1;
+    for (size_i = 0; size_i < sizes.length; size_i++) {
+        var this_size = parseInt(sizes[size_i]);
+        if (this_size == 0 || isNaN(this_size)) {
+            continue;
+        }
+        layer_sizes[n_layers] = this_size;
+        n_layers++;
+    }
+    layer_sizes[n_layers] = 1;
+    return layer_sizes;
+}
+
+function renderNet(layers) {
+    $('#net').text('');
+    for (var layer in layers) {
+        renderLayer(layers[layer]);
+    }
+    $(".param-box").on('spinchange', readUpdatedParams);
+    $(".param-box").on('spinstop', readUpdatedParams);
+}
+
+function renderLayer(layer) {
+    $('<div/>', {
+        class: 'clearer',
+    }).appendTo('#net');
+    for (var node in layer) {
+        renderNode(layer[node]);
+    }
+}
+
+function renderNode(node) {
+    $('<div>', {
+        id: node.id,
+        class: 'node',
+    }).text('').appendTo('#net');
+    if (node.node_type == 'input') {
+        renderInput(node);
+    } else if (node.node_type == 'fconn') {
+        renderFconn(node);
+    }
+}
+
+function renderInput(node) {
+    var node_selector = '#' + node.id;
+    $(node_selector).append('Input: ')
+    $('<span>', {
+        id: node.id + 'input',
+        class: 'input-span',
+    }).appendTo(node_selector);    
+}
+
+function renderFconn(node) {
+    var node_selector = '#' + node.id;
+    $(node_selector).append('m = ');
+    for (var parent_i in node.params.m) {
+        $('<input>', {
+            type: 'text',
+            value: node.params.m[parent_i],
+            id: node.id + 'm' + parent_i,
+            class: 'param-box',
+            param_type: 'm',
+            m_idx: parent_i,
+        }).appendTo(node_selector);
+        $('#' + node.id + 'm' + parent_i).spinner({
+            step: 0.1,
+        });
+    }
+
+    $(node_selector).append('<br /> b = ');
+    $('<input>', {
+        type: 'text',
+        value: node.params.b,
+        id: node.id + 'b',
+        class: 'param-box',
+        param_type: 'b',
+    }).appendTo(node_selector);
+    $('#' + node.id + 'b').spinner({
+        step: 0.1,
+    });
+
+    $(node_selector).append('<br /> Output value:');
+    $('<span>', {
+        id: node.id + 'output',
+        class: 'output-span',
+    }).appendTo(node_selector);
+}
+
+function setInputs(input_list, first_layer) {
+    if (first_layer.length == 1) {
+        first_layer[0].params.value = input_list;
+    } else {
+        for (var node_i in first_layer) {
+            first_layer[node_i].params.value = input_list[node_i];
+        }
+    }
+}
+
+function forward(layers) {
+    var all_outputs = [];
+    for (var layer_i in layers) {
+        var layer_outputs = [];
+        if (layer_i == 0) {
+            for (var node_i in layers[layer_i]) {
+                var node = layers[layer_i][node_i];
+                var this_value = node.params.value;
+                layer_outputs[node_i] = this_value;
+            }
+        } else {
+            for (var node_i in layers[layer_i]) {
+                var node = layers[layer_i][node_i];
+                var out_value = node.params.b;
+                for (prev_node_i in layers[layer_i - 1]) {
+                    out_value += all_outputs[layer_i - 1][prev_node_i] * node.params.m[prev_node_i];
+                }
+                var floored_value = nonLinearity(out_value);
+                layer_outputs[node_i] = floored_value;
+            }
+        }
+        all_outputs[layer_i] = layer_outputs;
+    }
+    return all_outputs;
+}
+
+function forwardMultiple(layers, inputs) {
+    var outputs = [];
+    for (var input_i in inputs) {
+        setInputs(inputs[input_i], layers[0]);
+        var this_outputs = forward(layers);
+        outputs[input_i] = this_outputs[layers.length - 1][0];
+    }
+    return outputs;
+}
+
+function getAverageError(predicted, truth, error_type) {
+    var new_predicted = [];
+    if (error_type === 'binary') {
+        for (var i in predicted) {
+            new_predicted[i] = Math.min(Math.max(predicted[i], 0), 1);
+        }
+    } else {
+        new_predicted = predicted;
+    }
+
+    var err = 0;
+    for (var i in new_predicted) {
+        err += Math.pow(new_predicted[i] - truth[i], 2);
+    }
+    return err / new_predicted.length;
+}
+
+function updateValues(layers, all_outputs) {
+    for (var layer_i in layers) {
+        for (var node_i in layers[layer_i]) {
+            var node = layers[layer_i][node_i];
+            if (layer_i == 0) {
+                $('#' + node.id + 'input').text(all_outputs[layer_i][node_i]);
+            } else {
+                $('#' + node.id + 'output').text(all_outputs[layer_i][node_i]);
+            }
+        }
+    }
+}
+
+function autoOptimizeCallback() {
+    if (!opt_state.on) {
+        return;
+    }
+    var node_to_update = layers[opt_state.next_layer][opt_state.next_node];
+    var last_error = getAverageError(forwardMultiple(layers, problem.inputs),
+        problem.outputs, problem.error_type);
+    for (var m_i in node_to_update.params.m) {
+        node_to_update.params.m[m_i] += opt_state.step_size;
+        var this_error = getAverageError(forwardMultiple(layers, problem.inputs),
+            problem.outputs, problem.error_type);
+        if (this_error < last_error) {
+            last_error = this_error;
+            continue;
+        }
+
+        node_to_update.params.m[m_i] -= opt_state.step_size * 2;
+        var this_error = getAverageError(forwardMultiple(layers, problem.inputs),
+            problem.outputs, problem.error_type);
+        if (this_error < last_error) {
+            last_error = this_error;
+            continue;
+        }
+
+        node_to_update.params.m[m_i] += opt_state.step_size;
+    }
+
+    // I'm really lazy, ok?
+    for (var b_i = 0; b_i < 1; b_i++) {
+        node_to_update.params.b += opt_state.step_size;
+        var this_error = getAverageError(forwardMultiple(layers, problem.inputs),
+            problem.outputs, problem.error_type);
+        if (this_error < last_error) {
+            last_error = this_error;
+            continue;
+        }
+
+        node_to_update.params.b -= opt_state.step_size * 2;
+        var this_error = getAverageError(forwardMultiple(layers, problem.inputs),
+            problem.outputs, problem.error_type);
+        if (this_error < last_error) {
+            last_error = this_error;
+            continue;
+        }
+
+        node_to_update.params.b += opt_state.step_size;
+
+    }
+    opt_state.next_node += 1;
+    if (layers[opt_state.next_layer].length <= opt_state.next_node) {
+        opt_state.next_layer += 1;
+        opt_state.next_node = 0;
+    }
+    if (layers.length <= opt_state.next_layer) {
+        opt_state.next_layer = 1;
+    }
+
+    renderNet(layers);
+    updateValues(layers, forward(layers));
+    plotProblem(problem, layers);
+    setTimeout(autoOptimizeCallback, opt_state.refresh_wait_time);
+}
+
+
+function makeNodeId(layer_i, node_i) {
+    return 'node_' + layer_i + '_' + node_i;
+}
+
+function randSmallNum() {
+    return 0.1 * Math.round(10 * Plotly.d3.random.normal()());
+}
+
+function initParams(node) {
+    if (node.node_type == 'input') {
+        node.params = {'value': 0};
+        return;
+    } else if (node.node_type == 'fconn') {
+        var ms = [];
+        for (var parent_i in node.parents) {
+            ms[parent_i] = randSmallNum();
+        }
+        node.params = {'m': ms, 'b': randSmallNum()};
+        return;
+    } else {
+        throw 'Invalid node type';
+    }
+}
+
+function makeNet(layer_sizes) {
+    layers = [];
+    node_map = {};
+    for (var layer_i in layer_sizes) {
+        layers[layer_i] = [];
+        var node_type;
+        var parents = [];
+        if (layer_i == 0) {
+            // Input layer.
+            node_type = 'input';
+        } else {
+            node_type = 'fconn';
+            for (var node_i = 0; node_i < layer_sizes[layer_i - 1]; node_i++) {
+                parents[node_i] = makeNodeId(layer_i - 1, node_i)
+            }
+        }
+        for (var node_i = 0; node_i < layer_sizes[layer_i]; node_i++) {
+            layers[layer_i][node_i] = {
+                id: makeNodeId(layer_i, node_i),
+                node_type: node_type,
+                parents: parents,
+            };
+            initParams(layers[layer_i][node_i]);
+            node_map[makeNodeId(layer_i, node_i)] = layers[layer_i][node_i]
+        }
+    }
+    return layers;
+}
+
+function plotClick(data) {
+    var data_i = data.points[0].pointNumber;
+    setInputs(problem.inputs[data_i], layers[0]);
+    updateValues(layers, forward(layers));
+    plotProblem(problem, layers);
+}
+
+function plotProblem(problem, layers) {
+    var outputs = forwardMultiple(layers, problem.inputs);
+    var dev_outputs = forwardMultiple(layers, problem.dev_inputs);
+    var inputs = [];
+    var dev_inputs = [];
+    var type;
+    if (problem.input_size == 1) {
+        inputs = problem.inputs;
+        dev_inputs = problem.dev_inputs;
+        type = 'scatter';
+    } else {
+        for (var ex_i in problem.inputs) {
+            inputs[ex_i] = "val: " + problem.inputs[ex_i].toString();
+        }
+        for (var ex_i in problem.dev_inputs) {
+            dev_inputs[ex_i] = "val: " + problem.dev_inputs[ex_i].toString();
+        }
+        type = 'bar';
+    }
+    var plotly_data = [{
+        name: 'Net output',
+        x: inputs,
+        y: outputs,
+        type: type,
+    }, {
+        name: 'Ground truth',
+        x: inputs,
+        y: problem.outputs,
+        type: type,
+    }];
+    Plotly.newPlot('plot-area', plotly_data);
+    var avg_error = getAverageError(outputs, problem.outputs, problem.error_type);
+    $('#average-error').text(avg_error);
+
+    document.getElementById('plot-area').on('plotly_click', plotClick);
+
+    var dev_data = [{
+        name: 'Net output',
+        x: dev_inputs,
+        y: dev_outputs,
+        type: type,
+    }, {
+        name: 'Ground truth',
+        x: dev_inputs,
+        y: problem.dev_outputs,
+        type: type,
+    }];
+    Plotly.newPlot('dev-plot-area', dev_data);
+    avg_error = getAverageError(dev_outputs, problem.dev_outputs, problem.error_type);
+    $('#dev-average-error').text(avg_error);
+
+}
+
+function readUpdatedParams(event, ui) {
+    var my_node = $(event.target).parent().parent().attr('id');
+    console.log(my_node);
+    if ($(this).attr('param_type') == 'm') {
+        node_map[my_node].params.m[$(this).attr('m_idx')] 
+            = parseFloat($(event.target).spinner("value"));
+    }
+    if ($(this).attr('param_type') == 'b') {
+        node_map[my_node].params.b
+            = parseFloat($(event.target).spinner("value"));
+    }
+    updateValues(layers, forward(layers));
+    plotProblem(problem, layers);
+}
+
+function readUpdatedSizes() {
+    layer_sizes = parseLayerSizes();
+    layers = makeNet(layer_sizes);
+    renderNet(layers);
+    updateValues(layers, forward(layers));
+    plotProblem(problem, layers);
+    setUpOptState();
+}
+
+function main() {
+    problem = setUpProblem();
+    readUpdatedSizes();
+    // Callbacks that don't change with any net params.
+    $("#net-size-box").change(readUpdatedSizes);
+    $("#problem-selector").change(main);
+    $("#start-opt").click(function() {
+        opt_state.on = true;
+        autoOptimizeCallback();
+    });
+    $("#stop-opt").click(function() {
+        opt_state.on = false;
+    })
+}
+
+$(document).ready(main);
+
+</script>
+
+<style>
+#main {
+    white-space: nowrap;
+}
+
+#options {
+    width: 500;
+    vertical-align: top;
+    white-space: normal;
+    display: inline-block;
+}
+
+#net {
+    vertical-align: top;
+    white-space: normal;
+    display: inline-block;
+}
+
+.node {
+    border: 2px solid;
+    border-color: #000000;
+    margin: 5px;
+    float: left;
+}
+
+.clearer {
+    clear: both;
+}
+
+.param-box {
+    width: 50px;
+}
+</style>
+
+<div id="main">
+<div id="options">
+    <p>
+    Net size:
+    <input type="text" id="net-size-box" value=""/>
+    </p>
+
+    <p>
+    Problem:
+    <select id="problem-selector">
+        <option value="or"> 2-input OR </option>
+        <option value="xor"> 2-input XOR </option>
+        <option value="parabola"> Parabola </option>
+        <option value="parabola-noise"> Parabola with noise </option>
+        <option value="custom"> Custom </option>
+    </select>
+    </p>
+    
+    <div id="plot-area"> </div>
+    <p>
+    <a id="start-opt"> Start auto optimization </a> <a id="stop-opt"> Stop auto optimization </a>
+    </p>
+
+    <p>
+    Average error: <span id="average-error"> </span>
+    </p>
+
+    <div id="dev-plot-area"> </div>
+    <p>
+    Average dev error: <span id="dev-average-error"> </span>
+    </p>
+
+
+</div>
+<div id="net"></div>
+</div>
