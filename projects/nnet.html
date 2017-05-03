@@ -13,8 +13,8 @@ var node_map = {};
 var opt_state = {};
 
 function nonLinearity(x) {
-    return x > 0 ? x : 0;
-    // return Math.log(1 + Math.exp(x));
+    // return x > 0 ? x : 0;
+    return Math.log(1 + Math.exp(x));
 }
 
 function setUpProblem() {
@@ -56,7 +56,7 @@ function setUpProblem() {
         }
     }
 
-    if (problem.name == 'custom') {
+    if (problem_name == 'custom') {
 
     }
 
@@ -497,7 +497,8 @@ $(document).ready(main);
 <div id="main">
 <div id="options">
     <p>
-    Net size:
+    Net size - enter comma-separated numbers.  An output layer of size 1 will 
+    automatically be added.
     <input type="text" id="net-size-box" value=""/>
     </p>
 
@@ -514,7 +515,8 @@ $(document).ready(main);
     
     <div id="plot-area"> </div>
     <p>
-    <a id="start-opt"> Start auto optimization </a> <a id="stop-opt"> Stop auto optimization </a>
+    <a id="start-opt" href="#"> Start auto optimization </a> &nbsp 
+    <a id="stop-opt" href="#"> Stop auto optimization </a>
     </p>
 
     <p>
