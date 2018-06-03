@@ -8,7 +8,7 @@ title: DeepHear - Composing and harmonizing music with neural networks
 </script>
 <script type='text/javascript' src='/music/midijs/midi.js'></script>
 <script type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
 <h3> Introduction and tl;dr </h3>
@@ -255,4 +255,8 @@ There's also a paper on generating <a href="http://cs224d.stanford.edu/reports/N
 
 <p>
 Finally, I have to mention Google's <a href="http://googleresearch.blogspot.com/2015/07/deepdream-code-example-for-visualizing.html">DeepDream</a> open source repo, which looks startlingly like my harmonization code, except for images instead of audio.  (I even named my project accordingly.)  Both my project and DeepDream use a "prior sampling" algorithm that does gradient descent over the input parameters.  I will swear that I came up with the idea independently of Google, though I suppose I shouldn't be expecting any credit.
+</p>
+
+<p>
+Thanks to <a href="https://github.com/kitchWWW"> kitchWWW </a> for his clone of MIDIjs, because sometime between 2015 and 2018, MIDI support on the web got even worse.
 </p>
