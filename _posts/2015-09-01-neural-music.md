@@ -6,9 +6,9 @@ title: DeepHear - Composing and harmonizing music with neural networks
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
-<script type='text/javascript' src='/music/midi.js'></script>
+<script type='text/javascript' src='/music/midijs/midi.js'></script>
 <script type="text/javascript"
-  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
 <h3> Introduction and tl;dr </h3>
