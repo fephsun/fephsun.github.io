@@ -258,5 +258,5 @@ Finally, I have to mention Google's <a href="http://googleresearch.blogspot.com/
 </p>
 
 <p>
-Thanks to <a href="https://github.com/kitchWWW"> kitchWWW </a> for his clone of MIDIjs, because sometime between 2015 and 2018, MIDI support on the web got even worse.  poke
+Thanks to <a href="https://github.com/kitchWWW"> kitchWWW </a> for his clone of MIDIjs, because sometime between 2015 and 2018, MIDI support on the web got even worse.
 </p>
