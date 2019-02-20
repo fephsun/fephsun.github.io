@@ -163,7 +163,10 @@ function populateStopDropdown() {
 
 function updateStop() {
   var info_div = document.getElementById('info');
-  info_div.innerHTML = ''
+  info_div.innerHTML = '';
+  // This is a pair of [arrival time, div stuff].  It needs to be sorted before
+  // we add it to info_div.
+  arrival_html_divs = [];
 
   var select = document.getElementById('stop-select');
   const our_ids = name_to_stop_ids[select.value];
@@ -228,7 +231,15 @@ function updateStop() {
       + ' <br /> Actual: ' + first_predicted_time.toLocaleTimeString()
       + ' <br /> (' + lateness_mins + ' minutes late) </p>';
 
-    info_div.appendChild(train_info_div);
+    arrival_html_divs.push([our_predicted_time_2, train_info_div]);
+  }
+
+  // Sort arrival_html_divs by predicted time.
+  arrival_html_divs.sort((div1, div2) => {
+    return (div1[0] > div2[0]) - (div1[0] < div2[0]);
+  });
+  for (const date_and_div of arrival_html_divs) {
+    info_div.appendChild(date_and_div[1]);
   }
 }
 
