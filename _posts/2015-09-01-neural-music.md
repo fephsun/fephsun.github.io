@@ -6,7 +6,7 @@ title: DeepHear - Composing and harmonizing music with neural networks
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
 </script>
-<script type='text/javascript' src='/music/midijs/libtimidity.js'></script>
+<script type='text/javascript' src='//www.midijs.net/lib/midi.js'></script>
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
